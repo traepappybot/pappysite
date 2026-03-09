@@ -1,6 +1,6 @@
 // lib/api.ts
 
-// Обязательно берем URL бекенда из переменной окружения
+// Берем URL бекенда только из переменной окружения фронта
 export const API_URL = process.env.NEXT_PUBLIC_API_URL!
 
 export function getToken() {
@@ -14,7 +14,6 @@ export async function api(path: string, opts: RequestInit = {}) {
 
   if (token) headers["Authorization"] = `Bearer ${token}`
 
-  // Отправляем запрос на реальный backend
   const res = await fetch(`${API_URL}${path}`, { ...opts, headers, cache: "no-store" })
 
   if (!res.ok) {
