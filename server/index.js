@@ -63,6 +63,6 @@ app.use("/leaderboard", leaderboardRoutes)
 app.use("/admin", adminRoutes)
 
 const PORT = process.env.PORT || 4000
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`PAPPY server on ${PORT}`)
 })
