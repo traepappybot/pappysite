@@ -24,6 +24,8 @@ const app = express()
 
 app.use(cors({
   origin: "https://romantic-flow-production.up.railway.app",
+  credentials: true
+}));
   methods: ["GET","POST","PUT","DELETE","OPTIONS"],
   allowedHeaders: ["Content-Type","Authorization"],
   credentials: true
@@ -31,7 +33,9 @@ app.use(cors({
 
 app.options("*", cors())
 
-app.use(helmet())
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
 app.use(express.json({ limit: "1mb" }))
 
 app.set("trust proxy", 1)
