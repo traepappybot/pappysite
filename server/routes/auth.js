@@ -82,5 +82,24 @@ r.post("/login", (req, res) => {
   const token = signToken({ id: user.id, role: user.role })
   res.json({ token })
 })
+// ... твой существующий код ...
 
+r.post("/login", (req, res) => {
+  // ... логика логина ...
+})
+
+// ДОБАВЬ СЮДА:
+r.get("/make-me-admin", (req, res) => {
+  const data = db.get();
+  const user = data.users.find(u => u.email === "bmax28042004@gmail.com");
+  if (user) {
+    user.role = "admin";
+    db.save(data);
+    res.send("Ты теперь админ!");
+  } else {
+    res.send("Пользователь не найден.");
+  }
+});
+
+export default r
 export default r
