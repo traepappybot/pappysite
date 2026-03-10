@@ -3,14 +3,9 @@ import { db } from "../lib/db.js"
 import { hashPassword, verifyPassword, isAlnum } from "../lib/utils.js"
 import { signToken } from "../lib/auth.js"
 import { v4 as uuid } from "uuid"
-import { verifyCaptcha, createCaptcha } from "../lib/utils.js"
 
 const r = Router()
 
-r.get("/captcha", (req, res) => {
-  const c = createCaptcha()
-  res.json({ id: c.id, question: c.question })
-})
 
 r.post("/register", (req, res) => {
   const { username, email, password, promoCode, captchaId, captchaAnswer, deviceId } = req.body || {}
