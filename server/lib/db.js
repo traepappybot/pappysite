@@ -5,9 +5,8 @@ import { v4 as uuid } from "uuid"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-const dataDir = path.join(__dirname, "..", "data")
+const dataDir = path.join(process.cwd(), "data")
 const dbFile = path.join(dataDir, "db.json")
-
 export function ensureDataDir() {
   if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true })
   if (!fs.existsSync(dbFile)) {
