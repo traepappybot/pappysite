@@ -62,7 +62,8 @@ app.use("/polls", pollRoutes)
 app.use("/leaderboard", leaderboardRoutes)
 app.use("/admin", adminRoutes)
 
-const PORT = process.env.PORT || 4000
+const PORT = process.env.PORT || 4000;
+// Мы добавляем '0.0.0.0', чтобы Railway мог "увидеть" твой сервер
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`PAPPY server on ${PORT}`)
-})
+  console.log(`Сервер запущен на порту ${PORT}`);
+});
