@@ -22,19 +22,25 @@ dotenv.config()
 
 const app = express()
 
-app.use(helmet())
-
 app.use(cors({
   origin: "https://romantic-flow-production.up.railway.app",
+  methods: ["GET","POST","PUT","DELETE","OPTIONS"],
+  allowedHeaders: ["Content-Type","Authorization"],
   credentials: true
 }))
 
-app.options("*", cors())   // ← ЭТА СТРОКА ВАЖНА
+app.options("*", cors())
 
+app.use(helmet())
 app.use(express.json({ limit: "1mb" }))
+
 app.set("trust proxy", 1)
 
-const limiter = rateLimit({ windowMs: 60 * 1000, max: 120 })
+const limiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 120
+})
+
 app.use(limiter)
 ensureDataDir()
 
