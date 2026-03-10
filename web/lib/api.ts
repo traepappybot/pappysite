@@ -1,7 +1,7 @@
 // lib/api.ts
 
 // Берем URL бекенда только из переменной окружения фронта
-export const API_URL = "https://pappysite-production-f8ad.up.railway.app/"
+export const API_URL = "https://pappysite-production-f8ad.up.railway.app"
 
 export function getToken() {
   if (typeof window === "undefined") return ""
