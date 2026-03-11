@@ -32,7 +32,7 @@ r.get("/", authRequired, adminOnly, (req, res) => {
   const list = data.orders.map(o => {
     const u = data.users.find(x => x.id === o.userId)
     const r = data.rewards.find(x => x.id === o.rewardId)
-    return { ...o, username: u?.username, rewardName: r?.name }
+    return { ...o, username: u?.username, role: u?.role, rewardName: r?.name }
   })
   res.json(list)
 })

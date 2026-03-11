@@ -4,8 +4,49 @@ import { api } from "../../lib/api"
 
 const tabs = ["Пользователи","Посты","Ставки","Награды","Заказы","РАБОТА","Квесты","Уровни","Промокоды","Аналитика"]
 
+function RoleBadge({ role }: { role?: string }) {
+  const r = role || "user"
+  const base = "ml-2 text-xs px-2 py-0.5 rounded-full border border-white/10"
+  if (r === "admin") return <span className={`${base} text-yellow-300`}>admin</span>
+  if (r === "moderator") return <span className={`${base} text-green-400`}>moderator</span>
+  return <span className={`${base} text-white/40`}>user</span>
+}
+
 export default function AdminPage() {
   const [tab, setTab] = useState("Пользователи")
+  const [checking, setChecking] = useState(true)
+  const [allowed, setAllowed] = useState(false)
+  const [error, setError] = useState("")
+
+  useEffect(() => {
+    let cancelled = false
+    api("/users/me")
+      .then((me: any) => {
+        if (cancelled) return
+        if (me.role === "admin") {
+          setAllowed(true)
+        } else {
+          setError("Доступ только для администратора")
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setError("Войдите под учетной записью администратора")
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setChecking(false)
+        }
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  if (checking) return <div className="text-white/60">Загрузка...</div>
+  if (!allowed) return <div className="text-red-400">{error || "Доступ запрещён"}</div>
+
   return (
     <div className="space-y-4">
       <h1 className="text-xl font-semibold">Админ-панель</h1>
@@ -51,10 +92,15 @@ function UserRow({ u, onUpdated }: any) {
   const changeBal = () => api("/admin/users/balance", { method: "POST", body: JSON.stringify({ userId: u.id, delta: Number(delta) }) }).then(onUpdated)
   return (
     <div className="flex items-center gap-2">
-      <div className="flex-1">{u.username} <span className="text-white/60">{u.email}</span></div>
+      <div className="flex-1 flex items-center gap-1">
+        <span>{u.username}</span>
+        <RoleBadge role={u.role} />
+        <span className="text-white/60">{u.email}</span>
+      </div>
       <div className="w-24 text-acid">{u.balance}</div>
       <select value={role} onChange={e=>setRole(e.target.value)} className="bg-white/10 p-2 rounded">
         <option value="user">user</option>
+        <option value="moderator">moderator</option>
         <option value="admin">admin</option>
       </select>
       <button onClick={saveRole} className="btn glass">Роль</button>
@@ -110,7 +156,10 @@ function OrderRow({ o, onUpdated }: any) {
   const save = () => api(`/orders/${o.id}/status`, { method: "POST", body: JSON.stringify({ status }) }).then(onUpdated)
   return (
     <div className="grid grid-cols-6 items-center gap-2">
-      <div className="truncate">{o.username}</div>
+      <div className="truncate flex items-center gap-1">
+        <span>{o.username}</span>
+        <RoleBadge role={o.role} />
+      </div>
       <div className="truncate">{o.rewardName}</div>
       <div className="truncate col-span-2">{o.tradeLink}</div>
       <select value={status} onChange={e=>setStatus(e.target.value)} className="bg-white/10 p-2 rounded">
