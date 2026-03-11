@@ -2,18 +2,19 @@ import fs from "fs"
 import path from "path"
 import { v4 as uuid } from "uuid"
 
-// Прямой путь к папке, которую мы примонтировали в Railway
-const dataDir = "/app/data" 
+// Используем временную директорию контейнера (Railway разрешает запись сюда)
+const dataDir = "/tmp/data"
 const dbFile = path.join(dataDir, "db.json")
 
 export function ensureDataDir() {
   try {
-    // Проверяем, существует ли папка. Если нет - создаем.
+    // Проверяем, существует ли папка. Если нет — создаём
     if (!fs.existsSync(dataDir)) {
-      fs.mkdirSync(dataDir, { recursive: true });
-      console.log("Папка data создана");
+      fs.mkdirSync(dataDir, { recursive: true })
+      console.log("Папка data создана")
     }
-    
+
+    // Если базы ещё нет — создаём файл
     if (!fs.existsSync(dbFile)) {
       const initial = {
         users: [],
@@ -39,28 +40,35 @@ export function ensureDataDir() {
           links: { telegram: "", discord: "", twitter: "", steam: "", youtube: "" }
         },
         emailVerifications: []
-      };
-      fs.writeFileSync(dbFile, JSON.stringify(initial, null, 2), "utf-8");
-      console.log("Файл db.json создан");
+      }
+
+      fs.writeFileSync(dbFile, JSON.stringify(initial, null, 2), "utf-8")
+      console.log("Файл db.json создан")
     }
+
   } catch (error) {
-    console.error("Ошибка при создании базы данных:", error);
+    console.error("Ошибка при создании базы данных:", error)
   }
 }
 
-// Функции read и write оставляем без изменений, но убедись, что они используют dbFile
 function read() {
-  const raw = fs.readFileSync(dbFile, "utf-8");
-  return JSON.parse(raw);
+  const raw = fs.readFileSync(dbFile, "utf-8")
+  return JSON.parse(raw)
 }
 
 function write(data) {
-  fs.writeFileSync(dbFile, JSON.stringify(data, null, 2), "utf-8");
+  fs.writeFileSync(dbFile, JSON.stringify(data, null, 2), "utf-8")
 }
 
 export const db = {
-  get() { return read(); },
-  save(data) { write(data); },
-  id() { return uuid(); }
-};
+  get() {
+    return read()
+  },
+  save(data) {
+    write(data)
+  },
+  id() {
+    return uuid()
+  }
+}
 
