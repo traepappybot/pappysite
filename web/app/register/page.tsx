@@ -15,6 +15,9 @@ export default function RegisterPage() {
   const [verifyToken, setVerifyToken] = useState("")
   const router = useRouter()
   const loadCaptcha = async () => {
+  const data = await api("/auth/captcha")
+  setCaptcha(data)
+}
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"}/auth/captcha`)
     const data = await res.json()
     setCaptcha(data)
